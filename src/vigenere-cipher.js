@@ -20,11 +20,15 @@ const { NotImplementedError } = require('../extensions/index.js');
  * 
  */
 class VigenereCipheringMachine {
+  
+  constructor(boo = true) {
+    this.mod = boo;
+  }
+
   encrypt(phrase, key) {
     if(!phrase || !key) {
       throw new Error("Incorrect arguments!");
     }
-    
 
     let matrix = [];
 
@@ -52,13 +56,49 @@ class VigenereCipheringMachine {
       }
       j++;
     }
-    
+    if(this.mod == false) {
+      return res.split('').reverse().join('').toUpperCase();
+    }
     return res.toUpperCase();
 
   }
-  decrypt() {
-    throw new NotImplementedError('Not implemented');
-    // remove line with error and write your code here
+  decrypt(phrase, key) {
+    if(!phrase || !key) {
+      throw new Error("Incorrect arguments!");
+    }
+
+    let matrix = [];
+
+    let alpha = 'abcdefghijklmnopqrstuvwxyz'.split('');
+    let alphabet = 'abcdefghijklmnopqrstuvwxyz'.split('');
+
+    for(let i=0; i < 26; i++){
+      matrix[i] = [...alphabet];
+      alphabet[alphabet.length-1] = alphabet.splice(0,1)[0];
+    }
+
+
+    let res = '';
+    let j = 0;
+    phrase = phrase.toLowerCase();
+    key = key.toLowerCase();
+    for(let i = 0; i < phrase.length; i++) {
+      
+      if(!/[a-z]/.test(phrase[i])){
+        res += phrase[i];
+        j--;
+      } else {
+        res += alpha[matrix[alpha.indexOf(key[j%(key.length)])].indexOf(phrase[i])];
+
+      }
+      j++;
+    }
+    
+    if(this.mod == false) {
+      return res.split('').reverse().join('').toUpperCase();
+    }
+
+    return res.toUpperCase();
   }
 
 }
